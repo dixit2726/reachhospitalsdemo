@@ -1794,9 +1794,12 @@ textarea.form-control {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 100%;
-  margin-top: 20px;
+  width: 100vw;
   position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 20px;
+  overflow: hidden;
 }
 
 /* Elegant left & right fading gradients to signify infinity */
@@ -1806,19 +1809,19 @@ textarea.form-control {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 200px;
+  width: 150px;
   z-index: 10;
   pointer-events: none;
 }
 
 .insurance-marquee-container::before {
   left: 0;
-  background: linear-gradient(90deg, #fbfcfd 0%, rgba(251, 252, 253, 0) 100%);
+  background: linear-gradient(90deg, var(--bg-light) 0%, rgba(208, 228, 240, 0) 100%);
 }
 
 .insurance-marquee-container::after {
   right: 0;
-  background: linear-gradient(-90deg, #fbfcfd 0%, rgba(251, 252, 253, 0) 100%);
+  background: linear-gradient(-90deg, var(--bg-light) 0%, rgba(208, 228, 240, 0) 100%);
 }
 
 .insurance-marquee-row {
@@ -1888,14 +1891,14 @@ textarea.form-control {
 @media (max-width: 1024px) {
   .insurance-marquee-container::before,
   .insurance-marquee-container::after {
-    width: 120px;
+    width: 100px;
   }
 }
 
 @media (max-width: 768px) {
   .insurance-marquee-container::before,
   .insurance-marquee-container::after {
-    width: 80px;
+    width: 60px;
   }
   .insurance-card {
     width: 200px;
@@ -1911,7 +1914,7 @@ textarea.form-control {
 @media (max-width: 480px) {
   .insurance-marquee-container::before,
   .insurance-marquee-container::after {
-    width: 50px;
+    width: 40px;
   }
 }
 
