@@ -198,4 +198,260 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // ==========================================
+    // PREMIUM CUSTOM CURSOR & INTERACTION SYSTEM
+    // ==========================================
+    const initCustomCursor = () => {
+        // Disable on touch devices or small screens
+        if ('ontouchstart' in window || window.innerWidth <= 1024 || window.matchMedia('(pointer: coarse)').matches) {
+            return;
+        }
+
+        // Load GSAP dynamically for ultra-smooth 60fps interpolation
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+        script.onload = () => {
+            setupCursorLogic();
+        };
+        script.onerror = () => {
+            // High-end vanilla requestAnimationFrame fallback if CDN fails
+            setupCursorFallback();
+        };
+        document.head.appendChild(script);
+    };
+
+    const setupCursorLogic = () => {
+        const cursorDot = document.createElement('div');
+        cursorDot.className = 'custom-cursor';
+        const cursorRing = document.createElement('div');
+        cursorRing.className = 'custom-cursor-ring';
+        document.body.appendChild(cursorDot);
+        document.body.appendChild(cursorRing);
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        // Mousemove logic with GSAP smooth follow
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            gsap.to(cursorDot, {
+                x: mouseX,
+                y: mouseY,
+                duration: 0.08,
+                overwrite: 'auto'
+            });
+
+            gsap.to(cursorRing, {
+                x: mouseX,
+                y: mouseY,
+                duration: 0.35,
+                ease: 'power3.out',
+                overwrite: 'auto'
+            });
+
+            // occasional particle spark
+            if (Math.random() < 0.04) {
+                createSpark(mouseX, mouseY);
+            }
+        });
+
+        // Click Ripple & squeeze animation
+        window.addEventListener('mousedown', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'cursor-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+
+            gsap.fromTo(cursorRing, 
+                { scale: 0.8 }, 
+                { scale: 1, duration: 0.3, ease: 'back.out(2)' }
+            );
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Floating sparks generator
+        const createSpark = (x, y) => {
+            const spark = document.createElement('div');
+            spark.className = 'cursor-spark';
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
+            
+            // Random colors (teal vs orange)
+            const color = Math.random() > 0.5 ? '#17c3b2' : '#f47c48';
+            spark.style.backgroundColor = color;
+            spark.style.boxShadow = `0 0 8px ${color}`;
+
+            document.body.appendChild(spark);
+
+            gsap.to(spark, {
+                x: `+=${(Math.random() - 0.5) * 60}`,
+                y: `-=${Math.random() * 80 + 30}`,
+                opacity: 0,
+                scale: 0.1,
+                duration: Math.random() * 0.8 + 0.6,
+                ease: 'power1.out',
+                onComplete: () => spark.remove()
+            });
+        };
+
+        // Hover expand selectors
+        const hoverTargets = 'a, button, .btn, .service-card, .doctor-card, .facility-card, .faq-header, .swiper-button-next, .swiper-button-prev, .swiper-pagination-bullet';
+        
+        document.body.addEventListener('mouseenter', (e) => {
+            const target = e.target.closest(hoverTargets);
+            if (target) {
+                cursorDot.classList.add('hovered');
+                cursorRing.classList.add('hovered');
+                
+                // Soft card scaling
+                const card = target.closest('.service-card, .doctor-card');
+                if (card) {
+                    gsap.to(card, {
+                        scale: 1.03,
+                        boxShadow: '0 15px 35px rgba(40, 76, 116, 0.12)',
+                        duration: 0.4,
+                        ease: 'power2.out'
+                    });
+                }
+            }
+        }, true);
+
+        document.body.addEventListener('mouseleave', (e) => {
+            const target = e.target.closest(hoverTargets);
+            if (target) {
+                cursorDot.classList.remove('hovered');
+                cursorRing.classList.remove('hovered');
+                
+                const card = target.closest('.service-card, .doctor-card');
+                if (card) {
+                    gsap.to(card, {
+                        scale: 1,
+                        boxShadow: 'none',
+                        duration: 0.4,
+                        ease: 'power2.out'
+                    });
+                }
+            }
+        }, true);
+
+        // Magnetic CTA Effect
+        const magneticTargets = '.btn-primary, .btn-teal-pill';
+        
+        document.body.addEventListener('mousemove', (e) => {
+            const magneticBtn = e.target.closest(magneticTargets);
+            if (magneticBtn) {
+                const rect = magneticBtn.getBoundingClientRect();
+                const btnX = rect.left + rect.width / 2;
+                const btnY = rect.top + rect.height / 2;
+                const distOffset = 60;
+
+                const deltaX = e.clientX - btnX;
+                const deltaY = e.clientY - btnY;
+                const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                if (dist < distOffset) {
+                    gsap.to(magneticBtn, {
+                        x: deltaX * 0.35,
+                        y: deltaY * 0.35,
+                        duration: 0.3,
+                        overwrite: 'auto',
+                        ease: 'power2.out'
+                    });
+                    
+                    gsap.to(cursorRing, {
+                        x: btnX + deltaX * 0.15,
+                        y: btnY + deltaY * 0.15,
+                        width: 52,
+                        height: 52,
+                        duration: 0.2,
+                        overwrite: 'auto'
+                    });
+                } else {
+                    resetMagnetic(magneticBtn);
+                }
+            }
+        });
+
+        document.body.addEventListener('mouseleave', (e) => {
+            const magneticBtn = e.target.closest(magneticTargets);
+            if (magneticBtn) {
+                resetMagnetic(magneticBtn);
+            }
+        }, true);
+
+        const resetMagnetic = (el) => {
+            gsap.to(el, {
+                x: 0,
+                y: 0,
+                duration: 0.5,
+                ease: 'elastic.out(1.1, 0.4)'
+            });
+        };
+    };
+
+    const setupCursorFallback = () => {
+        const cursorDot = document.createElement('div');
+        cursorDot.className = 'custom-cursor';
+        const cursorRing = document.createElement('div');
+        cursorRing.className = 'custom-cursor-ring';
+        document.body.appendChild(cursorDot);
+        document.body.appendChild(cursorRing);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let ringX = 0;
+        let ringY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        const render = () => {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+
+            requestAnimationFrame(render);
+        };
+        requestAnimationFrame(render);
+
+        window.addEventListener('mousedown', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'cursor-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        const hoverTargets = 'a, button, .btn, .service-card, .doctor-card, .facility-card, .faq-header';
+        document.body.addEventListener('mouseenter', (e) => {
+            if (e.target.matches(hoverTargets) || e.target.closest(hoverTargets)) {
+                cursorDot.classList.add('hovered');
+                cursorRing.classList.add('hovered');
+            }
+        }, true);
+
+        document.body.addEventListener('mouseleave', (e) => {
+            if (e.target.matches(hoverTargets) || e.target.closest(hoverTargets)) {
+                cursorDot.classList.remove('hovered');
+                cursorRing.classList.remove('hovered');
+            }
+        }, true);
+    };
+
+    // Run cursor activation
+    initCustomCursor();
 });

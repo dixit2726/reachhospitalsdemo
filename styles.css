@@ -356,10 +356,25 @@ img {
   left: 30px !important;
 }
 
-/* Hide swiper navigation on mobile */
+/* Style swiper navigation for mobile */
 @media (max-width: 768px) {
   .hero-next, .hero-prev {
-    display: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+  }
+  .hero-next {
+    right: 6px !important;
+    left: auto !important;
+  }
+  .hero-prev {
+    left: 6px !important;
+    right: auto !important;
+  }
+  .hero-next::after, .hero-prev::after {
+    font-size: 0.8rem !important;
   }
   .hero-pagination {
     bottom: 20px !important;
@@ -382,15 +397,15 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  /* High-end gradient that protects text legibility on the left, but leaves the image fully visible and vibrant on the right */
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.4) 45%, rgba(255, 255, 255, 0.05) 100%);
+  /* Premium vibrant medical blue wash at 100% opacity for perfect balance of image details and readability */
+  background: linear-gradient(90deg, rgba(40, 76, 116, 1.0) 0%, rgba(40, 76, 116, 0.75) 50%, rgba(40, 76, 116, 0.50) 100%);
   z-index: 2;
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
-  color: var(--primary); /* Dark Blue text */
+  color: #ffffff;
   max-width: 800px;
 }
 
@@ -400,23 +415,26 @@ img {
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 16px;
-  color: var(--secondary); /* Teal Green accent label */
+  color: #6ee7e4; /* Light teal — readable on dark overlay */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
 }
 
 .hero-title {
   font-size: 3.8rem;
   font-weight: 800;
-  color: var(--primary); /* Dark Blue */
+  color: #ffffff;
   margin-bottom: 24px;
   line-height: 1.15;
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.60), 0 1px 3px rgba(0, 0, 0, 0.70);
 }
 
 .hero-desc {
   font-size: 1.15rem;
   margin-bottom: 40px;
-  color: #475569; /* Slate gray body text */
+  color: rgba(255, 255, 255, 0.95); /* High opacity white body text */
   line-height: 1.7;
   max-width: 650px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.60), 0 1px 2px rgba(0, 0, 0, 0.70);
 }
 
 .hero-btns {
@@ -467,13 +485,13 @@ img {
 }
 
 .hero-btns .btn-outline {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: #ffffff;
 }
 
 .hero-btns .btn-outline:hover {
-  background: var(--primary);
-  color: var(--bg-white);
+  background: #ffffff;
+  color: var(--primary);
 }
 
 /* Premium Large Typography Scrolling Marquee Separator */
@@ -2179,10 +2197,10 @@ textarea.form-control {
     position: absolute !important;
     inset: 0 !important;
     background: linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.88) 0%,
-      rgba(255,255,255,0.70) 55%,
-      rgba(255,255,255,0.15) 100%
+      90deg,
+      rgba(40, 76, 116, 1.0) 0%,
+      rgba(40, 76, 116, 0.75) 50%,
+      rgba(40, 76, 116, 0.50) 100%
     ) !important;
     z-index: 2 !important;
   }
@@ -2201,13 +2219,19 @@ textarea.form-control {
 
   .hero-content {
     max-width: 100% !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 
   .hero-title {
-    font-size: 1.9rem !important;
-    line-height: 1.2 !important;
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-title br {
+    display: none !important;
   }
 
   .hero-subtitle {
@@ -2294,7 +2318,7 @@ textarea.form-control {
   }
   
   .hero-title {
-    font-size: 2.2rem !important;
+    font-size: 1.85rem !important;
   }
   
   .section-title {
@@ -2311,7 +2335,7 @@ textarea.form-control {
     padding: 28px 24px;
   }
   .hero-title {
-    font-size: 2rem !important;
+    font-size: 1.7rem !important;
   }
   .btn {
     width: 100%;
@@ -2346,6 +2370,103 @@ textarea.form-control {
   
   .stat-num {
     font-size: 2.5rem;
+  }
+}
+
+/* Custom mouse cursor styles - only applies to desktop and fine pointers */
+@media (min-width: 1025px) and (pointer: fine) {
+  body {
+    cursor: none; /* Hide default cursor on desktop */
+  }
+  a, button, .btn, .swiper-button-next, .swiper-button-prev, .swiper-pagination-bullet, .faq-header, .service-card, .doctor-card, input, select, textarea {
+    cursor: none !important;
+  }
+  
+  .custom-cursor {
+    width: 8px;
+    height: 8px;
+    background-color: #17c3b2; /* Hospital Teal */
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+  }
+  
+  .custom-cursor-ring {
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid rgba(23, 195, 178, 0.45);
+    background-color: rgba(23, 195, 178, 0.04);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px rgba(23, 195, 178, 0.15), inset 0 0 10px rgba(23, 195, 178, 0.08);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s, width 0.3s, height 0.3s;
+  }
+  
+  /* Cursor states on hover */
+  .custom-cursor.hovered {
+    width: 12px;
+    height: 12px;
+    background-color: #f47c48; /* Hospital Orange */
+  }
+  
+  .custom-cursor-ring.hovered {
+    width: 65px;
+    height: 65px;
+    border-color: rgba(244, 124, 72, 0.75);
+    background-color: rgba(244, 124, 72, 0.08);
+    box-shadow: 0 0 25px rgba(244, 124, 72, 0.35), inset 0 0 15px rgba(244, 124, 72, 0.15);
+    backdrop-filter: blur(0.5px);
+    -webkit-backdrop-filter: blur(0.5px);
+  }
+  
+  /* Ripple pulse effect on click */
+  .cursor-ripple {
+    position: fixed;
+    border: 2px solid #17c3b2;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99997;
+    transform: translate(-50%, -50%);
+    animation: cursor-ripple-anim 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  }
+  
+  /* Floating particle sparks */
+  .cursor-spark {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background-color: #17c3b2;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99996;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px #17c3b2;
+  }
+}
+
+@keyframes cursor-ripple-anim {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0.8;
+  }
+  100% {
+    width: 80px;
+    height: 80px;
+    opacity: 0;
+    border-color: #f47c48;
   }
 }
 
